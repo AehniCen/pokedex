@@ -9,7 +9,7 @@ header {
     
 }
 
-#pokedex-closed-img {
+#pokedex-opened-img {
     display: flex;
     justify-content: flex-start;
     padding-top: 0.4rem;

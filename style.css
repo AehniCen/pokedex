@@ -50,3 +50,7 @@ h1 {
     font-size: 7rem;
     color: #ffae21c5;
 }
+
+.d_none {
+    display: none;
+}

@@ -6,8 +6,11 @@
     <title>Pokedex</title>
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./styles/start.css">
+    <link rel="stylesheet" href="./styles/overlay.css">
+    <script src="./script.js"></script>
+    <script src="./scripts/template.js"></script>
 </head>
-<body>
+<body onload="loadPokemon()">
 
     <div class="background">
         <img id="background-image" src="assets/images/pokedex-background-less.jpg" alt="">
@@ -15,19 +18,45 @@
         <header>
 
             <div class="pokedex-image">
-                <img id="pokedex-closed-img" src="assets/images/pokedex-opened.png" alt="pokedex-open">
+                <img id="pokedex-opened-img" src="assets/images/pokedex-opened.png" alt="pokedex-open">
             </div>
             <h1>Pokedex</h1>
         
         </header>
 
-        <div class="pokedex-overlay"></div>
+        <div class="elements">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+            <img src="" alt="">
+        </div>
 
-        <section id="pokemon-overview"></section>
+        <div id="pokedex-overlay">
+            <img id="pokedex-closed-img" src="assets/images/pokedex-closed.png" alt="" onclick="toggleOverlay()">
+        </div>
+
+        <section id="pokemon-overview">
+
+            <div class="poke-div"></div>
+
+        </section>
 
         <footer></footer>
 
     </div>
-
 </body>
 </html>
