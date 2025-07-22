@@ -1,0 +1,17 @@
+header {
+    width: 100%;
+    height: fit-content;
+    background-color: #660e0ec5;
+    border-bottom: 1rem double;
+    border-color: #ff2e128e;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    
+}
+
+#pokedex-closed-img {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 0.4rem;
+    height: 8rem;
+}
