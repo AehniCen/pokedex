@@ -1,0 +1,37 @@
+@font-face {
+    font-family: 'Orbitron 400';
+    src: url('assets/fonts/orbitron/Orbitron-VariableFont_wght.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Orbitron 800';
+    src: url('assets/fonts/orbitron/Orbitron-VariableFont_wght.ttf') format('truetype');
+    font-weight: 800;
+    font-style: bold;
+}
+
+
+@font-face {
+    font-family: 'Handjet 400';
+    src: url('./assets/fonts/handjet/Handjet-VariableFont_ELGR,ELSH,wght.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Handjet 800';
+    src: url('./assets/fonts/handjet/Handjet-VariableFont_ELGR,ELSH,wght.ttf');
+    font-weight: 800;
+    font-style: bold;
+}
+
+
+
+body {
+    font-family: 'Handjet 800', sans-serif;
+    font-weight: 400;
+    font-size: 80px;
+    background-color: rgb(0, 61, 0);
+}
