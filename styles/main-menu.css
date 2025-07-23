@@ -1,0 +1,111 @@
+header {
+    width: 100%;
+    height: fit-content;
+    background-color: #660e0ec5;
+    border-bottom: 1rem double;
+    border-color: #ff2e128e;
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.main-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+#pokemon-overview {
+    position: relative;
+    height: 1200px;
+}
+
+#pokemon-details-div {
+    position: absolute;
+    width: 60%;
+    height: 100%;
+    top: -15rem;
+    left: 20%;
+    background-color: aliceblue;
+    z-index: 4000;
+    border-radius: 8px;
+}
+
+#pokedex-opened-img {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 0.4rem;
+    height: 8rem;
+}
+
+#poke-div {
+    display: grid;
+    grid-template-columns: repeat(7, 14%);
+    gap: 2rem;
+}
+
+.template-div {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.template-div:hover {
+    cursor: pointer;
+}
+
+.template-div:hover #poke-img-image {
+    transform: scale(1.4);
+    transition: transform 0.2s ease;
+}
+
+.template-div:hover .poke-div-name {
+    transform: scale(1.4);
+    transition: transform 0.2s ease;
+    bottom: -2rem;
+}
+
+.template-div:hover #poke-type-icon {
+    transform: scale(1.4);
+    transition: transform 0.2s ease;
+}
+
+.poke-div-type {
+    position: absolute;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    right: 0;
+}
+
+#poke-type-icon {
+    height: 1.5rem;
+}
+
+.poke-div-img {
+    background-color: black;
+    border-radius: 4rem;
+}
+
+#poke-img-image{
+    height: 8rem;
+}
+
+.poke-div-name {
+    position: absolute;
+    bottom: -1rem;
+    background-color: #ff2e128e;
+    border-radius: 8px;
+    border-style: solid;
+}
+
+#poke-name-p {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    padding: 0.3rem;
+}

@@ -1,0 +1,40 @@
+#types-div {
+    margin: 1rem;
+    margin-bottom: 5rem;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+#types-category-div {
+    position: relative;
+}
+
+.type-text {
+    visibility: hidden;
+    position: absolute;
+    z-index: 3000;
+    background-color: rgba(117, 117, 117, 0.774);
+    top: 100%;
+    left: 50%;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.types-categories {
+    height: 3rem;
+    padding-left: 1rem;
+    cursor: pointer;
+}
+
+#types-category-div:hover .type-text{
+    visibility: visible;
+    opacity: 1;
+}
+
+#types-category-div:hover .types-categories{
+    transform: scale(1.4);
+    transition: transform 0.2s ease;
+}
