@@ -33,8 +33,14 @@ function togglePokemonOverlay(index) {
 
 function applyTypeColor(pokemon) {
     let pokeOverlayRef = document.getElementById('pokemon-details-div');
-    let mainType = pokemon.types[0].type.name;
 
+    pokeOverlayRef.classList.forEach(cls => {
+        if (cls.startsWith('type-')) {
+            pokeOverlayRef.classList.remove(cls);
+        }
+    });
+
+    let mainType = pokemon.types[0].type.name;
     pokeOverlayRef.classList.add(`type-${mainType}`);
 }
 
@@ -56,8 +62,10 @@ function renderTypes() {
 }
 
 async function loadPokemon() {
-   
-    let response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10');
+    const loader = document.getElementById('loading-overlay');
+    loader.classList.remove('d_none');
+
+    let response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=60');
     let data = await response.json();
 
     for (let pokemon of data.results) {
@@ -67,6 +75,8 @@ async function loadPokemon() {
     }
 
     allDetails.forEach((pokemon, index) => renderPokeMenu(pokemon, index)); 
+
+    loader.classList.add('d_none');
 }
 
 function renderPokeMenu(pokemon, index) {

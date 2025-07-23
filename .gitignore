@@ -1,0 +1,12 @@
+# Windows Systemdateien
+Thumbs.db
+
+# VSCode-Einstellungen (nur lokal relevant)
+.vscode/
+
+# Logdateien (falls mal erzeugt)
+*.log
+
+# Sicherungskopien von Editoren
+*~
+*.swp

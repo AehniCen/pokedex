@@ -10,7 +10,7 @@ function pokeTemplate(pokemon, index){
 function pokeDetailsTemplate(pokemon, index) {
     return `
     <div id="poke-details-div">
-        <button id="poke-details-button">x</button>
+        <button id="poke-details-button" onclick="togglePokemonOverlay(${index})">x</button>
         <div id="poke-details-img-div">
             <img src="${pokemon.sprites.other["official-artwork"].front_default}" alt="">
         </div>
