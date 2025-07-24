@@ -1,6 +1,8 @@
 function togglePokemonOverlay(index) {
     let pokeOverlayRef = document.getElementById('pokemon-details-div');
+    let backgroundRef = document.getElementById('background-overlay');
     pokeOverlayRef.classList.toggle('d_none');
+    backgroundRef.classList.toggle('d_none');
     let pokemon;
 
     if (index !== undefined) {
@@ -63,6 +65,7 @@ function generateStatsBars(pokemon) {
         <div class="stat-bar-bg">
           <div class="stat-bar-fill" style="width: ${percentage}%"></div>
         </div>
+        <span class="stat-value">${value}</span>
       </div>
     `;
   }).join('');
@@ -134,7 +137,7 @@ async function animateAllSprites(pokemon) {
     }
 }
 
-function typeText(element, text, delay = 80) {
+function typeText(element, text, delay = 160) {
   element.innerHTML = ''; // Text leeren
   let i = 0;
 

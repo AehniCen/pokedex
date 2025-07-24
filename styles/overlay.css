@@ -23,6 +23,16 @@
     height: 90rem;
 }
 
+#background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 99;
+}
+
 #poke-details-type-icons {
     height: 2rem;
 }
@@ -35,6 +45,7 @@
     justify-content: flex-start;
     padding-top: 2rem;
     font-size: 1.3rem;
+    z-index: 100;
 }
 
 #poke-details-div-overlay p{

@@ -1,11 +1,12 @@
 #types-div {
     margin: 1rem;
-    margin-bottom: 5rem;
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     justify-content: center;
     gap: 1rem;
-    padding: 2rem;
+    padding-top: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 #types-category-div {

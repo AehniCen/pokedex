@@ -8,15 +8,14 @@
     <link rel="stylesheet" href="./styles/category.css">
     <link rel="stylesheet" href="./styles/main-menu.css">
     <link rel="stylesheet" href="./styles/overlay.css">
-    <script src="./script.js"></script>
     <script src="./scripts/db.js"></script>
     <script src="./scripts/template.js"></script>
     <script src="./scripts/detailOverlay.js"></script>
 </head>
 <body onload="loadPokemon(), renderTypes()">
 
-    <div class="main-div">
-        <img id="background-image" src="assets/images/pokedex-background-less.jpg" alt="">
+    <div id="main-div">
+        <img id="background-image" src="assets/images/pokedex-background.jpg" alt="">
 
         <header>
 
@@ -27,23 +26,29 @@
         
         </header>
 
-        <div id="types-div">
+        <div id="types-filter-div">
+            <div id="types-div"></div>
+            <p id="selected-type-text"></p>
         </div>
-
         
 
         <section id="pokemon-overview">
 
             <div id="poke-div"></div>
 
+            <div id="background-overlay" class="d_none" onclick="togglePokemonOverlay(), playAudio()"></div>
             <div id="pokemon-details-div" class="d_none"></div>
 
             <div id="loading-overlay" class="d_none"><img id="loading-pokeball" src="assets/gifs/loading-pokeball.gif" alt="loading-pokeball"></div>
 
         </section>
 
+        <button id="load-more-btn" onclick="loadPokemon()" style="display: none;">Weitere 60 laden</button>
+
         <footer></footer>
 
     </div>
+
+    <script src="./script.js"></script>
 </body>
 </html>
