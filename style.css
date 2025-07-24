@@ -47,6 +47,10 @@ h1 {
     color: #ffae21c5;
 }
 
+button:hover {
+    cursor: pointer;
+}
+
 .d_none {
     display: none !important;
 }
@@ -64,7 +68,7 @@ h1 {
     background-color: #F7D02C; 
 }
 .type-grass     { 
-    background-color: #7AC74C; 
+    background-color: #478d1fa8; 
 }
 .type-ice       { 
     background-color: #96D9D6; 
