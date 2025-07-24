@@ -21,8 +21,8 @@ function pokeDetailsTemplate(pokemon, index) {
             </div>
         </div>
         <div id="poke-details-name-div">
-            <div><p>Name:</p></div><p id="poke-details-name">${pokemon.species.name}</p>
-            <div><p>Typ:</p></div><div id="poke-details-type"><p>${pokemon.types
+            <div><p>Name:</p></div><p id="poke-details-name" class="poke-details-position pd_padding">${pokemon.species.name}</p>
+            <div><p>Typ:</p></div><div id="poke-details-type" class="poke-details-position pd_padding"><p>${pokemon.types
                     .map(t => {
                       const type = t.type.name;
                       const icon = typeIcons[type];
@@ -35,11 +35,20 @@ function pokeDetailsTemplate(pokemon, index) {
                     })
                     .join('')}</p>
             </div>
-            <div><p>Abilities:</p></div><p id="poke-details-abilities">${pokemon.abilities.map(t => t.ability.name).join('<br>')}</p>
-            <div><p>Moves:</p></div><p id="poke-details-moves">${pokemon.moves.slice(0, 3).map(t => t.move.name).join('<br>')}</p>
-            <div><p>Forms:</p></div>
+            <div><p>Abilities:</p></div>
+            <ul id="poke-details-abilities" class="pd_padding">
+              ${pokemon.abilities
+                .map(t => `<li>${t.ability.name.replace(/-/g, ' ')}</li>`)
+                .join('')}
+            </ul>
+            <div><p>Moves:</p></div>
+            <ul id="poke-details-moves"class="pd_padding">
+              ${pokemon.moves.slice(0, 3)
+                .map(t => `<li>${t.move.name.replace(/-/g, ' ')}</li>`)
+                .join('')}
+            </ul>
         </div>
-        <div id="poke-details-sprite-div"><img id="poke-sprite" src="" alt="pokemon-sprite"><div id="poke-evolution-sprite"></div></div>
+        <div id="poke-details-sprite-div"><p>Forms:</p><img id="poke-sprite" src="" alt="pokemon-sprite"><div id="poke-evolution-sprite"></div></div>
         
     </div>
     `

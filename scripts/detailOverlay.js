@@ -38,7 +38,6 @@ function applyTypeColor(pokemon) {
 
 function renderPokeDetails(pokemon, index) {
     let pokeOverlayRef = document.getElementById('pokemon-details-div');
-
     pokeOverlayRef.innerHTML = "";
     pokeOverlayRef.innerHTML += pokeDetailsTemplate(pokemon, index);
 

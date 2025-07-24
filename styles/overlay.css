@@ -34,7 +34,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     padding-top: 2rem;
-    font-size: 25px;
+    font-size: 1.3rem;
 }
 
 #poke-details-div-overlay p{
@@ -44,6 +44,7 @@
 
 #poke-details-img-stats-div {
     width: 75%;
+    padding-left: 5px;
 }
 
 #poke-details-img-div {
@@ -75,14 +76,26 @@
 #poke-details-name-div {
     display: grid;
     grid-template-columns: auto auto;
+    align-items: center;
+    gap: 3rem;
     height: 70%;
-    width: 100%; 
+    width: 60%; 
     padding-top: 2rem;
-    
+    margin-right: 1rem;
 }
 
-#poke-details-type {
-    
+.poke-details-position {
+    padding-left: 1rem;
+}
+
+.pd_padding {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#poke-details-name-div > *:nth-child(2n) {
+  background-color: rgba(0, 0, 0, 0.301);
+  border-radius: 8px;
 }
 
 .stat-row {
@@ -94,38 +107,45 @@
   width: 80px;
   text-transform: capitalize;
   font-weight: bold;
+  padding-bottom: 5px;
 }
 
 .stat-bar-bg {
   display: inline-block;
   width: 40%;
   height: 12px;
-  background-color: #ddd;
-  border-radius: 6px;
+  background-color: #0000008e;
   overflow: hidden;
   vertical-align: middle;
   margin-left: 4rem;
+  border-style: solid;
 }
 
 .stat-bar-fill {
   height: 100%;
-  background-color: #3b82f6; /* oder nach Typ einfärben */
-  border-radius: 6px;
-  
+  background-color: #be3232cb; /* oder nach Typ einfärben */
+}
+
+#poke-details-abilities {
+    height: 100%;
+    
+
 }
 
 #poke-details-sprite-div {
     display: flex;
     position: absolute;
+    align-items: center;
     bottom: 0;
-    right: 3rem;
+    right: 1rem;
 }
 
 #poke-sprite {
     height: 10rem;
 }
 #poke-evolution-sprite img{
-    height: 10rem;
+    height: 9rem;
+    padding-right: 2rem;
 }
 
 #loading-overlay {

@@ -4,7 +4,7 @@ let allDetails = [];
 
 let AUDIO_CLICK = new Audio ('assets/audio/click.mp3');
 let AUDIO_DELAY = new Audio ('assets/audio/text-delay.mp3');
-AUDIO_DELAY.volume = 0.05;
+AUDIO_DELAY.volume = 0.02;
 
 
 function toggleOverlay() {
