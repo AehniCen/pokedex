@@ -11,10 +11,12 @@ let typeOffset = 0;
 const TYPE_LIMIT = 60;
 let currentTypeResults = [];
 let renderedPokemon = [];
-let AUDIO_CLICK = new Audio ('assets/audio/click.mp3');
+let AUDIO_CLICK = new Audio ('./assets/audio/click.mp3');
 AUDIO_CLICK.volume = 0.3;
-let AUDIO_DELAY = new Audio ('assets/audio/text-delay.mp3');
-AUDIO_DELAY.volume = 0.02;
+let AUDIO_DELAY = new Audio ('./assets/audio/text-delay.mp3');
+AUDIO_DELAY.volume = 0.08;
+let AUDIO_POKEDEX = new Audio ('./assets/audio/open-pokedex.mp3')
+AUDIO_POKEDEX.volume = 0.2
 
 
 function toggleStartOverlay() {
@@ -24,6 +26,8 @@ function toggleStartOverlay() {
     const pokedexAnim = 'assets/gifs/pokedex-animation.gif';
 
     pokedexImg.src = pokedexAnim;
+
+    AUDIO_POKEDEX.play();
 
     setTimeout(() => {
         overlayRef.style.display = 'none';
@@ -111,9 +115,14 @@ async function filterByType(selectedType) {
         const typeFilteredDetails = [];
 
         for (let entry of batch) {
-            const pokeRes = await fetch(entry.url);
-            const pokeData = await pokeRes.json();
-            typeFilteredDetails.push(pokeData);
+            const cleanName = entry.name.split(':')[0];
+            try {
+                const pokeRes = await fetch(`${BASE_URL}/${cleanName}`);
+                const pokeData = await pokeRes.json();
+                typeFilteredDetails.push(pokeData);
+            } catch (e) {
+                console.warn(`Überspringe ungültigen Eintrag: ${entry.name}`, e);
+            }
         }
 
         typeFilteredDetails.forEach((pokemon, index) => renderPokeMenu(pokemon, index));
@@ -132,6 +141,7 @@ async function filterByType(selectedType) {
         loader.classList.add('d_none');
     }
 }
+
 
 function clearTypeFilter() {
     renderedPokemon = [];
@@ -168,10 +178,15 @@ async function loadPokemonFiltered(type) {
         const typeFilteredDetails = [];
 
         for (let entry of batch) {
-            const pokeRes = await fetch(entry.url);
-            const pokeData = await pokeRes.json();
-            typeFilteredDetails.push(pokeData);
-            allDetails.push(pokeData);
+            const cleanName = entry.name.split(':')[0];
+            try {
+                const pokeRes = await fetch(`${BASE_URL}/${cleanName}`);
+                const pokeData = await pokeRes.json();
+                typeFilteredDetails.push(pokeData);
+                allDetails.push(pokeData);
+            } catch (e) {
+                console.warn(`Überspringe ungültigen Eintrag: ${entry.name}`, e);
+            }
         }
 
         const startIndex = allDetails.length - typeFilteredDetails.length;
@@ -179,6 +194,7 @@ async function loadPokemonFiltered(type) {
         typeFilteredDetails.forEach((pokemon, i) => {
             renderPokeMenu(pokemon, startIndex + i);
         });
+
         typeOffset += TYPE_LIMIT;
 
     } catch (error) {
@@ -187,6 +203,7 @@ async function loadPokemonFiltered(type) {
         loader.classList.add('d_none');
     }
 }
+
 
 function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);

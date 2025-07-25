@@ -27,7 +27,7 @@ header {
     border-style: solid;
     border-color: #701212;
     margin-top: 2rem;
-    height: 20%;
+    height: min-content;
     background-color: #00000059;
 }
 
@@ -38,6 +38,7 @@ header {
     overflow-x: hidden;
     width: 90%;
 }
+
 #pokemon-overview::-webkit-scrollbar-thumb:hover {
     cursor: pointer;
     background-color: #b82a14;
@@ -86,11 +87,11 @@ header {
 
 #poke-div {
     display: grid;
+    justify-content: center;
     grid-template-columns: repeat(6, 10.5rem);
     gap: 2rem;
     height: 100vh;
     padding-top: 1rem;
-    
 }
 
 .template-div {
