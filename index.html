@@ -28,7 +28,7 @@
 
         <div id="types-filter-div">
             <div id="types-div"></div>
-            <p id="selected-type-text"></p>
+            <p id="selected-type-text" onclick="playAudio()"></p>
         </div>
         
 
@@ -36,14 +36,14 @@
 
             <div id="poke-div"></div>
 
-            <div id="background-overlay" class="d_none" onclick="togglePokemonOverlay(), playAudio()"></div>
+            <div id="background-overlay" class="d_none" onclick="closePokemonOverlay(), playAudio()"></div>
             <div id="pokemon-details-div" class="d_none"></div>
 
             <div id="loading-overlay" class="d_none"><img id="loading-pokeball" src="assets/gifs/loading-pokeball.gif" alt="loading-pokeball"></div>
 
         </section>
 
-        <button id="load-more-btn" onclick="loadPokemon()" style="display: none;">Weitere 60 laden</button>
+        <button id="load-more-btn" onclick="loadMore(), playAudio()" style="display: none;">Weitere 60 laden</button>
 
         <footer></footer>
 

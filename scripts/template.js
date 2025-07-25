@@ -1,6 +1,6 @@
 function pokeTemplate(pokemon, index){
     return `
-    <div class="template-div" onclick="togglePokemonOverlay(${index}), playDelay()">
+    <div class="template-div" onclick="openPokemonOverlay(${index}), playDelay()">
         <div class="poke-div-type" id="poke-div-type-${index}"></div>
         <div id="poke-div-img-${index}" class="poke-div-img"><img id="poke-img-image"src="${pokemon.sprites.other["official-artwork"].front_default}" alt="pokemon-image"></div>
         <div class="poke-div-name"><p id="poke-name-p">${capitalize(pokemon.species.name)}</p></div>
@@ -11,7 +11,7 @@ function pokeDetailsTemplate(pokemon, index) {
     
     return `
     <div id="poke-details-div-overlay">
-        <button id="poke-details-button" onclick="togglePokemonOverlay(${index}), playAudio()">x</button>
+        <button id="poke-details-button" onclick="closePokemonOverlay(${index}), playAudio()">x</button>
         <div id="poke-details-img-stats-div">
             <div id="poke-details-img-div">
                 <img id="poke-details-img" src="${pokemon.sprites.other["official-artwork"].front_default}" alt="">
@@ -48,8 +48,7 @@ function pokeDetailsTemplate(pokemon, index) {
                 .join('')}
             </ul>
         </div>
-        <div id="poke-details-sprite-div"><p>Forms:</p><img id="poke-sprite" src="" alt="pokemon-sprite"><div id="poke-evolution-sprite"></div></div>
-        
+        <div id="poke-details-sprite-div"><p>Forms:</p><img id="poke-sprite" src="" alt="pokemon-sprite"></div>        
     </div>
     `
 }

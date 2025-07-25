@@ -5,8 +5,11 @@ let offset = 0;
 const LIMIT = 60;
 const container = document.getElementById('pokemon-overview');
 const loadMoreBtn = document.getElementById('load-more-btn');
+let spriteAnimationInterval;
+let currentTypeFilter = null;
 
 let AUDIO_CLICK = new Audio ('assets/audio/click.mp3');
+AUDIO_CLICK.volume = 0.3;
 let AUDIO_DELAY = new Audio ('assets/audio/text-delay.mp3');
 AUDIO_DELAY.volume = 0.02;
 
@@ -116,28 +119,51 @@ function renderTypeIcon(pokemon, index) {
     });
 }
 
-function filterByType(selectedType) {
+async function filterByType(selectedType) {
+    currentTypeFilter = selectedType; // ✅ Filter merken
+
     const pokeRef = document.getElementById('poke-div');
     const selectedTypeText = document.getElementById('selected-type-text');
+    const loader = document.getElementById('loading-overlay');
     pokeRef.innerHTML = '';
+    selectedTypeText.innerHTML = '';
+    loader.classList.remove('d_none');
 
-    const filtered = allDetails.filter(pokemon => 
-        pokemon.types.some(t => t.type.name === selectedType)
-    );
+    try {
+        const res = await fetch(`https://pokeapi.co/api/v2/type/${selectedType}`);
+        const data = await res.json();
 
-    if (filtered.length === 0) {
-        pokeRef.innerHTML = `<p>Keine Pokemon vom Typ "${selectedType}" gefunden.</p>`;
-    }else {
-        filtered.forEach((pokemon, index) => renderPokeMenu(pokemon, index));
+        const pokemonEntries = data.pokemon.slice(0, 60); // max. 60 laden
+        const typeFilteredDetails = [];
+
+        for (let entry of pokemonEntries) {
+            const pokeRes = await fetch(entry.pokemon.url);
+            const pokeData = await pokeRes.json();
+            typeFilteredDetails.push(pokeData);
+        }
+
+        if (typeFilteredDetails.length === 0) {
+            pokeRef.innerHTML = `<p>Keine Pokémon vom Typ "${selectedType}" gefunden.</p>`;
+        } else {
+            typeFilteredDetails.forEach((pokemon, index) => renderPokeMenu(pokemon, index));
+        }
+
+        selectedTypeText.innerHTML = `
+            Filter Typ: <strong>${capitalize(selectedType)}</strong>
+            <button onclick="clearTypeFilter()">Entfernen</button>
+        `;
+
+    } catch (error) {
+        pokeRef.innerHTML = `<p>Fehler beim Laden der Pokémon vom Typ "${selectedType}"</p>`;
+        console.error(error);
+    } finally {
+        loader.classList.add('d_none');
     }
-
-    selectedTypeText.innerHTML = `
-        Filter Typ: <strong>${capitalize(selectedType)}</strong>
-        <button onclick="clearTypeFilter()">Entfernen</button>
-    `;
 }
 
 function clearTypeFilter() {
+    currentTypeFilter = null; // ✅ Filter zurücksetzen
+
     const pokeRef = document.getElementById('poke-div');
     const selectedTypeText = document.getElementById('selected-type-text');
 
@@ -145,4 +171,13 @@ function clearTypeFilter() {
     selectedTypeText.innerHTML = '';
 
     allDetails.forEach((pokemon, index) => renderPokeMenu(pokemon, index));
+}
+
+function loadMore() {
+    if (currentTypeFilter !== null) {
+        alert('Bitte entferne zuerst den aktiven Typfilter, bevor du weitere Pokémon lädst.');
+        return;
+    }
+
+    loadPokemon();
 }

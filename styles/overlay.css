@@ -139,8 +139,6 @@
 
 #poke-details-abilities {
     height: 100%;
-    
-
 }
 
 #poke-details-sprite-div {
@@ -151,12 +149,12 @@
     right: 1rem;
 }
 
-#poke-sprite {
+#poke-details-sprite-div img{
     height: 10rem;
 }
-#poke-evolution-sprite img{
-    height: 9rem;
-    padding-right: 2rem;
+
+#poke-details-sprite-div img:hover{
+    cursor: pointer;
 }
 
 #loading-overlay {
