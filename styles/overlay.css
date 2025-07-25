@@ -79,7 +79,7 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 0.5rem;
-    background-color: rgba(3, 29, 3, 0.295);
+    background-color: rgba(24, 24, 24, 0.295);
     border: none;
     filter: drop-shadow(50%);
 }

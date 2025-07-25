@@ -12,7 +12,7 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 90vh;
+    height: 95vh;
     width: 100%;
     overflow: hidden;
 }
@@ -28,7 +28,7 @@ header {
     border-color: #701212;
     margin-top: 2rem;
     height: 20%;
-    background-color: #dd8d1e52;
+    background-color: #00000059;
 }
 
 #pokemon-overview {
@@ -73,7 +73,7 @@ header {
     border-radius: 8px;
     border-style: solid;
     border-width: 8px;
-    border-color: #051606d0;
+    border-color: #000000d0;
     
 }
 
@@ -166,9 +166,9 @@ header {
     background-color: rgba(255, 255, 255, 0);
     font-size: 1.2rem;
     border: none;
-    height: 5rem;
+    height: 4rem;
 }
 
 #pokeball-load-more {
-    height: 5rem;
+    height: 4rem;
 }

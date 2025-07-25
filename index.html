@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokedex</title>
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="icon" href="./assets/images/favicon.ico">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./styles/category.css">
     <link rel="stylesheet" href="./styles/main-menu.css">
     <link rel="stylesheet" href="./styles/overlay.css">
+    <link rel="stylesheet" href="./styles/responsive.css">
     <script src="./scripts/db.js"></script>
     <script src="./scripts/template.js"></script>
-    <script src="./scripts/detailOverlay.js"></script>
 </head>
 <body onload="loadPokemon(), renderTypes()">
 
     <div id="main-div">
-        <img id="background-image" src="assets/images/pokedex-background.jpg" alt="">
+        <img id="background-image" src="assets/images/yellow-background.png" alt="">
 
         <header>
 
@@ -32,6 +32,9 @@
             <div id="selected-type-text" onclick="playAudio()"></div>
         </div>
         
+        <div id="pokedex-overlay">
+            <img id="pokedex-closed-img" src="assets/images/pokedex-closed.png" alt="" onclick="toggleStartOverlay()">
+        </div>
 
         <section id="pokemon-overview">
 
@@ -51,5 +54,7 @@
     </div>
 
     <script src="./script.js"></script>
+    <script src="./scripts/renderOverview.js"></script>
+    <script src="./scripts/detailOverlay.js"></script>
 </body>
 </html>
