@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokedex</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./styles/category.css">
     <link rel="stylesheet" href="./styles/main-menu.css">
@@ -28,7 +29,7 @@
 
         <div id="types-filter-div">
             <div id="types-div"></div>
-            <p id="selected-type-text" onclick="playAudio()"></p>
+            <div id="selected-type-text" onclick="playAudio()"></div>
         </div>
         
 
@@ -43,7 +44,7 @@
 
         </section>
 
-        <button id="load-more-btn" onclick="loadMore(), playAudio()" style="display: none;">Weitere 60 laden</button>
+        <button id="load-more-btn" onclick="loadMore(), playAudio()"><img id="pokeball-load-more" src="assets/images/pokeball-load-more.png" alt=""  style="display: none;"></button>
 
         <footer></footer>
 

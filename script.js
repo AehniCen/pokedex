@@ -4,9 +4,13 @@ let allDetails = [];
 let offset = 0;
 const LIMIT = 60;
 const container = document.getElementById('pokemon-overview');
-const loadMoreBtn = document.getElementById('load-more-btn');
+const loadMoreBtn = document.getElementById('pokeball-load-more');
 let spriteAnimationInterval;
 let currentTypeFilter = null;
+let typeOffset = 0;
+const TYPE_LIMIT = 60;
+let currentTypeResults = [];
+let renderedPokemon = [];
 
 let AUDIO_CLICK = new Audio ('assets/audio/click.mp3');
 AUDIO_CLICK.volume = 0.3;
@@ -37,9 +41,23 @@ function renderTypes() {
     
 }
 
+function openPokemonOverlayByName(name) {
+    const index = renderedPokemon.findIndex(p => p.name === name);
+    if (index !== -1) {
+        openPokemonOverlay(index);
+        playDelay();
+    } else {
+        console.warn(`Pokémon mit Name "${name}" nicht in renderedPokemon gefunden.`);
+    }
+}
+
 async function loadPokemon() {
+    renderedPokemon = [];
     const loader = document.getElementById('loading-overlay');
+    const overviewRef = document.getElementById('pokemon-overview');
+
     loader.classList.remove('d_none');
+    overviewRef.style.overflowY = 'hidden';
 
     try{
     let response = await fetch(`${BASE_URL}?limit=${LIMIT}&offset=${offset}`);
@@ -63,6 +81,7 @@ async function loadPokemon() {
         document.getElementById('poke-div').innerHTML = "<p>Fehler beim Laden der Pokemon</p>"
     } finally {
         loader.classList.add('d_none');
+         overviewRef.style.overflowY = 'auto';
     }
 }
 
@@ -73,7 +92,7 @@ container.addEventListener('scroll', () => {
 
   console.log(scrollTop, visibleHeight, contentHeight) 
 
-  if (scrollTop + visibleHeight >= contentHeight - 10) {
+  if (scrollTop + visibleHeight >= contentHeight - 0) {
     loadMoreBtn.style.display = 'block';
   } else {
     loadMoreBtn.style.display = 'none';
@@ -86,7 +105,9 @@ function capitalize(word) {
 
 function renderPokeMenu(pokemon, index) {
     let pokeRef = document.getElementById('poke-div'); 
-     
+    
+    renderedPokemon.push(pokemon);
+
     pokeRef.innerHTML += pokeTemplate(pokemon, index);
     renderTypeIcon(pokemon, index);
     getTypeColor(pokemon, index);
@@ -120,11 +141,14 @@ function renderTypeIcon(pokemon, index) {
 }
 
 async function filterByType(selectedType) {
-    currentTypeFilter = selectedType; // ✅ Filter merken
+    renderedPokemon = [];
+    currentTypeFilter = selectedType;
+    typeOffset = 0; // Offset zurücksetzen beim Filterwechsel
 
     const pokeRef = document.getElementById('poke-div');
     const selectedTypeText = document.getElementById('selected-type-text');
     const loader = document.getElementById('loading-overlay');
+    const typeIconSrc = typeIcons[selectedType];
     pokeRef.innerHTML = '';
     selectedTypeText.innerHTML = '';
     loader.classList.remove('d_none');
@@ -133,24 +157,25 @@ async function filterByType(selectedType) {
         const res = await fetch(`https://pokeapi.co/api/v2/type/${selectedType}`);
         const data = await res.json();
 
-        const pokemonEntries = data.pokemon.slice(0, 60); // max. 60 laden
+        currentTypeResults = data.pokemon.map(p => p.pokemon); // Cache Ergebnis
+
+        // nur die ersten TYPE_LIMIT laden
+        const batch = currentTypeResults.slice(typeOffset, typeOffset + TYPE_LIMIT);
         const typeFilteredDetails = [];
 
-        for (let entry of pokemonEntries) {
-            const pokeRes = await fetch(entry.pokemon.url);
+        for (let entry of batch) {
+            const pokeRes = await fetch(entry.url);
             const pokeData = await pokeRes.json();
             typeFilteredDetails.push(pokeData);
         }
 
-        if (typeFilteredDetails.length === 0) {
-            pokeRef.innerHTML = `<p>Keine Pokémon vom Typ "${selectedType}" gefunden.</p>`;
-        } else {
-            typeFilteredDetails.forEach((pokemon, index) => renderPokeMenu(pokemon, index));
-        }
+        typeFilteredDetails.forEach((pokemon, index) => renderPokeMenu(pokemon, index));
+        typeOffset += TYPE_LIMIT;
 
         selectedTypeText.innerHTML = `
-            Filter Typ: <strong>${capitalize(selectedType)}</strong>
-            <button onclick="clearTypeFilter()">Entfernen</button>
+            <p>Filter Typ:<strong id="selected-filter">${capitalize(selectedType)}</strong></p>
+            <img id="filter-type-icon" src="${typeIconSrc}" alt="${selectedType} Icon">
+            <button id="filter-clear-btn" onclick="clearTypeFilter()">x</button>
         `;
 
     } catch (error) {
@@ -162,22 +187,60 @@ async function filterByType(selectedType) {
 }
 
 function clearTypeFilter() {
-    currentTypeFilter = null; // ✅ Filter zurücksetzen
+    renderedPokemon = [];
+    currentTypeFilter = null;
 
     const pokeRef = document.getElementById('poke-div');
     const selectedTypeText = document.getElementById('selected-type-text');
+    const loader = document.getElementById('loading-overlay');
 
     pokeRef.innerHTML = '';
     selectedTypeText.innerHTML = '';
+    loader.classList.remove('d_none'); // 🟢 Loader anzeigen
 
-    allDetails.forEach((pokemon, index) => renderPokeMenu(pokemon, index));
+    // Warten bis Rendering abgeschlossen ist
+    setTimeout(() => {
+        pokeRef.innerHTML = '';
+        allDetails.forEach((pokemon, index) => renderPokeMenu(pokemon, index));
+        loader.classList.add('d_none'); // 🔴 Loader wieder ausblenden
+    }, 50); // kleiner Delay (z. B. 50 ms), um UI-Update zu ermöglichen
 }
 
 function loadMore() {
     if (currentTypeFilter !== null) {
-        alert('Bitte entferne zuerst den aktiven Typfilter, bevor du weitere Pokémon lädst.');
-        return;
+        loadPokemonFiltered(currentTypeFilter);
+    } else {
+        loadPokemon();
     }
+}
 
-    loadPokemon();
+async function loadPokemonFiltered(type) {
+    const pokeRef = document.getElementById('poke-div');
+    const loader = document.getElementById('loading-overlay');
+    loader.classList.remove('d_none');
+
+    try {
+        const batch = currentTypeResults.slice(typeOffset, typeOffset + TYPE_LIMIT);
+        const typeFilteredDetails = [];
+
+        for (let entry of batch) {
+            const pokeRes = await fetch(entry.url);
+            const pokeData = await pokeRes.json();
+            typeFilteredDetails.push(pokeData);
+            allDetails.push(pokeData); // ✅ wichtig: hinzufügen für Index-Konsistenz
+        }
+
+        const startIndex = allDetails.length - typeFilteredDetails.length;
+
+        typeFilteredDetails.forEach((pokemon, i) => {
+            renderPokeMenu(pokemon, startIndex + i); // ✅ konsistenter Index
+        });
+
+        typeOffset += TYPE_LIMIT;
+
+    } catch (error) {
+        console.error("Fehler beim Nachladen gefilterter Pokémon:", error);
+    } finally {
+        loader.classList.add('d_none');
+    }
 }

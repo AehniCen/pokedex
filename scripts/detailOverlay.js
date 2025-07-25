@@ -2,10 +2,9 @@ function openPokemonOverlay(index) {
     const pokeOverlayRef = document.getElementById('pokemon-details-div');
     const backgroundRef = document.getElementById('background-overlay');
 
-    const pokemon = allDetails[index];
+    const pokemon = renderedPokemon[index]; // ✅ Zugriff auf die aktuelle Anzeige-Liste
     if (!pokemon) return;
 
-    // Sichtbar machen, falls nicht schon offen
     pokeOverlayRef.classList.remove('d_none');
     backgroundRef.classList.remove('d_none');
 
@@ -143,7 +142,7 @@ function typeText(element, text, delay = 160) {
 }
 
 function openPokemonOverlayByName(name) {
-    const index = allDetails.findIndex(p => p.name === name);
+    const index = renderedPokemon.findIndex(p => p.name === name);
     if (index !== -1) {
         openPokemonOverlay(index);
         playDelay(); // falls du Ton willst

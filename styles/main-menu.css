@@ -12,7 +12,7 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    height: 90vh;
     width: 100%;
     overflow: hidden;
 }
@@ -21,15 +21,22 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: start;
     margin-bottom: 4rem;
+    border-radius: 32px;
+    border-style: solid;
+    border-color: #701212;
+    margin-top: 2rem;
+    height: 20%;
+    background-color: #dd8d1e52;
 }
 
 #pokemon-overview {
     position: relative;
-    max-height: 100vh;
+    height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
+    width: 90%;
 }
 #pokemon-overview::-webkit-scrollbar-thumb:hover {
     cursor: pointer;
@@ -79,7 +86,7 @@ header {
 
 #poke-div {
     display: grid;
-    grid-template-columns: repeat(7, 14%);
+    grid-template-columns: repeat(6, 10.5rem);
     gap: 2rem;
     height: 100vh;
     padding-top: 1rem;
@@ -151,4 +158,17 @@ header {
     margin-block-start: 0;
     margin-block-end: 0;
     padding: 0.3rem;
+}
+
+#load-more-btn {
+    margin-top: 2rem;
+    font-family: 'Orbitron 800';
+    background-color: rgba(255, 255, 255, 0);
+    font-size: 1.2rem;
+    border: none;
+    height: 5rem;
+}
+
+#pokeball-load-more {
+    height: 5rem;
 }

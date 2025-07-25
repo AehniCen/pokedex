@@ -1,6 +1,6 @@
 function pokeTemplate(pokemon, index){
     return `
-    <div class="template-div" onclick="openPokemonOverlay(${index}), playDelay()">
+    <div class="template-div" onclick="openPokemonOverlayByName('${pokemon.name}'), playDelay()">
         <div class="poke-div-type" id="poke-div-type-${index}"></div>
         <div id="poke-div-img-${index}" class="poke-div-img"><img id="poke-img-image"src="${pokemon.sprites.other["official-artwork"].front_default}" alt="pokemon-image"></div>
         <div class="poke-div-name"><p id="poke-name-p">${capitalize(pokemon.species.name)}</p></div>
