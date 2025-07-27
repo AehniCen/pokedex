@@ -1,15 +1,3 @@
-
-
-function openPokemonOverlayByName(name) {
-    const index = renderedPokemon.findIndex(p => p.name === name);
-    if (index !== -1) {
-        openPokemonOverlay(index);
-        playDelay();
-    } else {
-        console.warn(`Pokémon mit Name "${name}" nicht in renderedPokemon gefunden.`);
-    }
-}
-
 function renderPokeMenu(pokemon, index) {
     let pokeRef = document.getElementById('poke-div'); 
     

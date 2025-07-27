@@ -1,12 +1,58 @@
+@media(max-width: 1822px){
+    #poke-details-name-div {
+    width: 40%;
+}
+    #poke-details-img-stats-div {
+    width: 60%;
+}
+}
+
+@media(max-width: 1520px){
+    #poke-details-div-overlay {
+    font-size: 1.5rem;
+}
+}
+
 @media(max-width: 1354px){
     #poke-div {
     grid-template-columns: repeat(5, 10.5rem);
 }
 }
 
+@media(max-width: 1230px){
+    #poke-details-name-div {
+    width: 30%;
+}
+    #poke-details-img-stats-div {
+    width: 70%;
+}
+    #poke-details-sprite-div img {
+    height: 4rem;
+}
+}
+
 @media(max-width: 1134px){
     #poke-div {
     grid-template-columns: repeat(4, 10.5rem);
+}
+}
+
+@media(max-width: 1060px){
+    #pokemon-details-div {
+    width: 90%;
+    left: 5%;
+}
+}
+
+@media(max-width: 950px){
+    #poke-details-name-div {
+    width: 40%;
+}
+    #poke-details-img-stats-div {
+    width: 60%;
+}
+    #poke-details-div-overlay {
+    font-size: 1rem;
 }
 }
 
@@ -26,6 +72,41 @@
 }
 }
 
+@media(max-width: 816px){
+    #poke-details-stats-div {
+    padding-top: 4rem;
+}
+    #poke-details-img {
+    height: 13rem;
+}
+    #poke-details-name-div {
+    gap: 1.5rem;
+    padding-left: 2rem;
+}
+}
+
+@media(max-width: 802px){
+    #poke-details-div-overlay {
+    flex-direction: column;
+    align-items: center;
+    
+}
+    #poke-details-img-stats-div {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+    #poke-details-stats-div {
+        padding-left: 4rem;
+        width: 50%;
+    }
+        #poke-details-name-div {
+        width: 80%;
+    }
+}
+
 @media(max-width: 725px){
     header {
         align-items: center;
@@ -39,10 +120,64 @@
     }
 }
 
+@media(max-width: 706px){
+    #poke-details-stats-div {
+        padding-left: 4rem;
+        width: 60%;
+    }
+        #poke-details-name-div {
+        padding-left: 0;
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+       
+}
+
 @media(max-width: 676px){
     #poke-div {
     grid-template-columns: repeat(2, 10.5rem);
     }
+}
+
+@media(max-width: 632px){
+    #poke-details-img-stats-div {
+        justify-content: space-between;
+    }
+    #poke-details-stats-div {
+        padding-left: 2rem;
+        width: 60%;
+    }
+    #poke-details-img {
+    height: 11rem;
+}       
+}
+
+@media(max-width: 586px){
+    #poke-details-img-stats-div {
+    flex-direction: column;
+}
+    #poke-details-stats-div {
+        width: 100%;
+        padding-top: 1rem;
+    }
+    .stat-row {
+        width: 100%;
+    }
+        #poke-details-name-div {
+        width: 80%;
+    }
+        #poke-details-name-div {
+        gap: 1rem;
+    }
+    #poke-details-abilities {
+    height: 80%;
+}
+    #pokemon-details-div {
+    position: fixed;
+    top: 5rem;
+    left: 5%;
+}
+
 }
 
 @media(max-width: 548px){
@@ -79,6 +214,19 @@
     #selected-type-text {
     width: 80%;
 }
+    #poke-details-name-div {
+    width: 70%;
+}
+    #poke-details-sprite-div img {
+        height: 3rem;
+    }
+}
+
+@media(max-width: 390px){
+    #poke-details-stats-div {
+        padding-left: 0.5rem;
+        width: 90%;
+    }
 }
 
 @media(max-width: 379px){
@@ -100,6 +248,9 @@
     #poke-div {
     grid-template-columns: repeat(2, 5.5rem);
 }
+    #poke-details-stats-div {
+        padding-left: 0;
+    }
 }
 
 @media(min-width: 1606px){

@@ -16,7 +16,6 @@ function handleCloseOverlay() {
         AUDIO_DELAY.pause();
         AUDIO_DELAY.currentTime = 0;
     }
-
     closePokemonOverlay();
     playAudio();
 }
@@ -53,7 +52,6 @@ function renderPokeDetails(pokemon, index) {
     let pokeOverlayRef = document.getElementById('pokemon-details-div');
     pokeOverlayRef.innerHTML = "";
     pokeOverlayRef.innerHTML += pokeDetailsTemplate(pokemon, index);
-
     
     const allPTags = pokeOverlayRef.querySelectorAll('p');
 
@@ -69,7 +67,6 @@ function generateStatsBars(pokemon) {
     const name = stat.stat.name;
     const value = stat.base_stat;
     const percentage = Math.min((value / 200) * 100, 100); 
-
     return `
       <div class="stat-row">
         <span class="stat-label"><p>${name}</p></span>
@@ -83,74 +80,60 @@ function generateStatsBars(pokemon) {
 }
 
 async function animateAllSprites(pokemon) {
-    const spriteContainer = document.getElementById('poke-details-sprite-div');
-    spriteContainer.innerHTML = ''; // Direkt zu Beginn leeren
+  const pokeOverlayRef = document.getElementById('pokemon-details-div');
+  const spriteRow = pokeOverlayRef.querySelector('.sprite-current-col');
+  const formsLabel = pokeOverlayRef.querySelector('#forms-label');
+  const spriteImg = pokeOverlayRef.querySelector('#poke-sprite');
+  const spriteContainer = pokeOverlayRef.querySelector('#poke-details-sprite-div');
 
-    if (spriteAnimationInterval) {
-        clearInterval(spriteAnimationInterval);
-    }
+  formsLabel.style.display = 'none';
+  if (spriteImg) spriteImg.style.display = 'none';
+  if (spriteImg) spriteImg.src = '';
+  spriteRow.style.display = 'none';
+  spriteContainer.innerHTML = '';
+  spriteContainer.classList.add('d_none');
 
+  if (spriteAnimationInterval) {
+    clearInterval(spriteAnimationInterval);
+  }
+  try {
     const speciesRes = await fetch(pokemon.species.url);
     const speciesData = await speciesRes.json();
-
     const evoRes = await fetch(speciesData.evolution_chain.url);
     const evoData = await evoRes.json();
-
     const evolutionNames = [];
     let current = evoData.chain;
-
     while (current) {
-        evolutionNames.push(current.species.name);
-        current = current.evolves_to[0];
+      evolutionNames.push(current.species.name);
+      current = current.evolves_to[0];
     }
-
     const spritePairs = [];
-    let validSpriteCount = 0;
-
     for (let name of evolutionNames) {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-        const data = await res.json();
-        const front = data.sprites.front_default;
-        const back = data.sprites.back_default;
-
-        if (front && back) {
-            if (validSpriteCount === 0) {
-                spriteContainer.innerHTML = '<p>Forms:</p>'; // Erst beim ersten gültigen Sprite einfügen
-                spriteContainer.classList.remove('d_none');
-            }
-
-            validSpriteCount++;
-
-            const evoImg = document.createElement('img');
-            evoImg.src = front;
-            evoImg.alt = `${name}-sprite`;
-            evoImg.classList.add('evo-sprite');
-
-            if (name === pokemon.name) {
-                evoImg.classList.add('current-pokemon');
-            }
-
-            evoImg.setAttribute('onclick', `openPokemonOverlayByName('${name}')`);
-            spriteContainer.appendChild(evoImg);
-            spritePairs.push({ front, back, element: evoImg });
-        }
+      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+      const data = await res.json();
+      const front = data.sprites.front_default;
+      const back = data.sprites.back_default; 
+      if (front && back) {
+        spritePairs.push({ front, back, name });
+        const evoImg = document.createElement('img');
+        evoImg.src = front;
+        evoImg.alt = `${name}-sprite`;
+        evoImg.classList.add('evo-sprite');
+        evoImg.setAttribute('onclick', `openPokemonOverlayByName('${name}')`);
+        spriteContainer.appendChild(evoImg);
+      }
     }
-
-    if (validSpriteCount === 0) {
-        spriteContainer.innerHTML = '';      // sicherheitshalber leeren
-        spriteContainer.classList.add('d_none');
-        return;
-    }
-
-    let showFront = true;
-    spriteAnimationInterval = setInterval(() => {
-        for (let sprite of spritePairs) {
-            sprite.element.src = showFront ? sprite.front : sprite.back;
+        if (spritePairs.length === 0) return;
+        if (spriteContainer.children.length > 0) {
+          spriteContainer.classList.remove('d_none');
         }
-        showFront = !showFront;
-    }, 500);
+      } catch (err) {
+        console.error('Fehler beim Laden der Sprites:', err);
+      }
+
+    formsLabel.style.display = 'block';
+    spriteRow.style.display = 'flex';
 }
-
 
 function typeText(element, text, delay = 160) {
   element.innerHTML = '';
@@ -165,15 +148,17 @@ function typeText(element, text, delay = 160) {
 
 function openPokemonOverlayByName(name) {
     let pokemon = renderedPokemon.find(p => p.name === name);
-
     if (!pokemon && typeof allDetails !== 'undefined') {
         pokemon = allDetails.find(p => p.name === name);
     }
     if (pokemon) {
         openPokemonOverlayFromObject(pokemon);
         playDelay();
+    } else {
+        console.warn(`Pokémon mit Name "${name}" nicht gefunden.`);
     }
 }
+
 
 function openPokemonOverlayFromObject(pokemon) {
     const pokeOverlayRef = document.getElementById('pokemon-details-div');
@@ -185,5 +170,8 @@ function openPokemonOverlayFromObject(pokemon) {
     backgroundRef.classList.remove('d_none');
 
     applyTypeColor(pokemon);
-    renderPokeDetails(pokemon);
+
+    const index = renderedPokemon.findIndex(p => p.name === pokemon.name);
+    renderPokeDetails(pokemon, index);
+    playDelay();
 }

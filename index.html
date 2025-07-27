@@ -16,15 +16,14 @@
 <body onload="loadPokemon(), renderTypes()">
 
     <div id="main-div">
-        <img id="background-image" src="assets/images/yellow-background.png" alt="">
+        <img id="background-image" class="vignette-bg" src="assets/images/yellow-background.png" alt="">
+        <div id="vignette-frame"></div>
 
         <header>
-
             <div class="pokedex-image">
                 <img id="pokedex-opened-img" src="assets/images/pokedex-opened.png" alt="pokedex-open">
             </div>
             <h1>Pokedex</h1>
-        
         </header>
 
         <div id="types-filter-div">
@@ -37,21 +36,15 @@
         </div>
 
         <section id="pokemon-overview">
-
             <div id="poke-div"></div>
-
             <div id="background-overlay" class="d_none" onclick="closePokemonOverlay(), playAudio()"></div>
             <div id="pokemon-details-div" class="d_none"></div>
-
-            <div id="loading-overlay" class="d_none"><img id="loading-pokeball" src="assets/gifs/loading-pokeball.gif" alt="loading-pokeball"></div>
-
         </section>
 
         <button id="load-more-btn" onclick="loadMore(), playAudio()"><img id="pokeball-load-more" src="assets/images/pokeball-load-more.png" alt=""  style="display: none;"></button>
 
-        <footer></footer>
-
     </div>
+    <div id="loading-overlay" class="d_none"><img id="loading-pokeball" src="assets/gifs/loading-pokeball.gif" alt="loading-pokeball"></div>
 
     <script src="./script.js"></script>
     <script src="./scripts/renderOverview.js"></script>

@@ -47,8 +47,11 @@ function pokeDetailsTemplate(pokemon, index) {
                 .map(t => `<li>${capitalize(t.move.name.replace(/-/g, ' '))}</li>`)
                 .join('')}
             </ul>
-        </div>
-        <div id="poke-details-sprite-div"><img id="poke-sprite" src="" alt="pokemon-sprite"></div>        
+            <div class="sprite-current-col">
+              <p id="forms-label">Forms:</p>
+            </div>
+            <div id="poke-details-sprite-div" class="d_none"></div>
+        </div>      
     </div>
     `
 }
