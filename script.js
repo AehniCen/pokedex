@@ -128,7 +128,7 @@ async function filterByType(selectedType) {
         const data = await res.json();
         await getFilteredPokemon(data, selectedType, selectedTypeText);   
     } catch (error) {
-        pokeRef.innerHTML = `<p>Fehler beim Laden der Pokémon vom Typ "${selectedType}"</p>`;
+        pokeRef.innerHTML = `<p>Fehler beim Laden der Pokemon vom Typ "${selectedType}"</p>`;
     } finally {
         loader.classList.add('d_none');
     }
@@ -144,27 +144,27 @@ async function getFilteredPokemon(data, selectedType, selectedTypeText) {
 }
 
 async function fetchPokemonByName(name) {
-  const cleanName = name.split(':')[0];
-  if (cleanName.includes(':')) return null;
-  try {
-    const res = await fetch(`${BASE_URL}/${cleanName}`);
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+    const cleanName = name.split(':')[0];
+    if (cleanName.includes(':')) return null;
+    try {
+      const res = await fetch(`${BASE_URL}/${cleanName}`);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
 }
 
 async function getDetailsFiltered(batch) {
-  const details = [];
-  for (const entry of batch) {
-    const pokeData = await fetchPokemonByName(entry.name);
-    if (pokeData) {
-      details.push(pokeData);
-      filteredDetails.push(pokeData);
+    const details = [];
+    for (const entry of batch) {
+      const pokeData = await fetchPokemonByName(entry.name);
+      if (pokeData) {
+        details.push(pokeData);
+        filteredDetails.push(pokeData);
+      }
     }
-  }
-  details.forEach((p, i) => renderPokeMenu(p, typeOffset + i));
+    details.forEach((p, i) => renderPokeMenu(p, typeOffset + i));
 }
 
 function loadMore() {
@@ -186,7 +186,7 @@ async function loadPokemonFiltered() {
         await getDetailsFiltered(batch);
         typeOffset += TYPE_LIMIT;
     } catch (error) {
-        console.error("Fehler beim Nachladen gefilterter Pokémon:", error);
+        console.error("Fehler beim Nachladen gefilterter Pokemon:", error);
     } finally {
         loader.classList.add('d_none');
         hideLoadMoreBtn();
