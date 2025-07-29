@@ -4,15 +4,18 @@ let allDetails = [];
 let filteredDetails = [];
 let offset = 0;
 const LIMIT = 60;
-const container = document.getElementById('pokemon-overview');
+const overviewRef = document.getElementById('pokemon-overview');
 const loadMoreBtn = document.getElementById('pokeball-load-more');
+const pokeRef = document.getElementById('poke-div');
 let spriteAnimationInterval;
 let currentTypeFilter = null;
+const selectedTypeText = document.getElementById('selected-type-text');
 let typeOffset = 0;
 const TYPE_LIMIT = 60;
 let currentTypeResults = [];
 let renderedPokemon = [];
 let totalPokemonCount = 0;
+const loader = document.getElementById('loading-overlay');
 
 let AUDIO_CLICK = new Audio ('./assets/audio/click.mp3');
 AUDIO_CLICK.volume = 0.3;
@@ -44,59 +47,64 @@ function renderTypes() {
 }
 
 async function loadPokemon() {
-    renderedPokemon = [];
-    const loader = document.getElementById('loading-overlay');
-    const overviewRef = document.getElementById('pokemon-overview');
-    const loadMoreBtn = document.getElementById('pokeball-load-more');
-
     loader.classList.remove('d_none');
-    overviewRef.style.overflowY = 'hidden';
-
     try {
         let response = await fetch(`${BASE_URL}?limit=${LIMIT}&offset=${offset}`);
         let data = await response.json();
         totalPokemonCount = data.count;
-        for (let pokemon of data.results) {
-            let exists = allDetails.find(p => p.name === pokemon.name);
-            if (!exists) {
-                let detailsResponse = await fetch(pokemon.url);
-                let details = await detailsResponse.json();
-                allDetails.push(details);
-            }
-        }
-        const startIndex = allDetails.length - data.results.length;
-        allDetails.slice(startIndex).forEach((pokemon, index) => {
-            renderPokeMenu(pokemon, startIndex + index);
-        });
+        await pushDetails(data);
+        startIndex(data);
         offset += LIMIT;
-        if (offset >= totalPokemonCount) {
-            loadMoreBtn.style.display = 'none';
-        }
     } catch (error) {
-        console.error("Fehler beim Laden der Pokemon:", error);
-        document.getElementById('poke-div').innerHTML = "<p>Fehler beim Laden der Pokemon</p>"
+        pokeRef.innerHTML = "<p>Fehler beim Laden der Pokemon</p>";
     } finally {
         loader.classList.add('d_none');
-        overviewRef.style.overflowY = 'auto';
-        if (offset < totalPokemonCount) {
-            loadMoreBtn.style.display = 'none'; 
-        } else {
-            loadMoreBtn.style.display = 'none';
-        }
+        hideLoadMoreBtn();
     }
 }
 
-container.addEventListener('scroll', () => {
+async function pushDetails(data) {
+    for (let pokemon of data.results) {
+        if (!allDetails.find(p => p.name === pokemon.name)) {
+            try {
+                let detailsResponse = await fetch(pokemon.url);
+                if (!detailsResponse.ok) {
+                    console.warn(`Details nicht gefunden für ${pokemon.name}`);
+                    continue;
+                }
+                let details = await detailsResponse.json();
+                allDetails.push(details);
+            } catch (e) {
+                console.warn(`Fehler beim Laden von Details für ${pokemon.name}:`, e);
+            }}
+    }
+}
+
+function hideLoadMoreBtn() {
+    overviewRef.style.overflowY = 'auto';
+    if (currentTypeFilter) {
+        loadMoreBtn.style.display = (typeOffset < currentTypeResults.length) ? 'block' : 'none';
+    } else {
+        loadMoreBtn.style.display = (offset < totalPokemonCount) ? 'block' : 'none';
+    }
+}
+
+function startIndex(data) {
+    const startIndex = allDetails.length - data.results.length;
+        allDetails.slice(startIndex).forEach((pokemon, index) => {
+            renderPokeMenu(pokemon, startIndex + index);
+        });
+}
+
+overviewRef.addEventListener('scroll', () => {
     const SCROLL_TOLERANCE = 100;
-    const scrollTop = container.scrollTop;
-    const visibleHeight = container.clientHeight;
-    const contentHeight = container.scrollHeight;
+    const scrollTop = overviewRef.scrollTop;
+    const visibleHeight = overviewRef.clientHeight;
+    const contentHeight = overviewRef.scrollHeight;
     const distanceToBottom = contentHeight - (scrollTop + visibleHeight);
-    const morePokemonAvailable = currentTypeFilter 
-
+    const morePokemonAvailable = currentTypeFilter
         ? (typeOffset < currentTypeResults.length)
-        : (offset < 1118);
-
+        : (offset < totalPokemonCount);
     if (distanceToBottom <= SCROLL_TOLERANCE && morePokemonAvailable) {
         loadMoreBtn.style.display = 'block';
     } else {
@@ -104,48 +112,59 @@ container.addEventListener('scroll', () => {
     }
 });
 
-async function filterByType(selectedType) {
+function clearFilter() {
     renderedPokemon = [];
-    currentTypeFilter = selectedType;
     typeOffset = 0;
-
-    const pokeRef = document.getElementById('poke-div');
-    const selectedTypeText = document.getElementById('selected-type-text');
-    const loader = document.getElementById('loading-overlay');
-    const typeIconSrc = typeIcons[selectedType];
     pokeRef.innerHTML = '';
     selectedTypeText.innerHTML = '';
-    loader.classList.remove('d_none');
+}
 
+async function filterByType(selectedType) {
+    clearFilter();
+    currentTypeFilter = selectedType;
+    loader.classList.remove('d_none');
     try {
         const res = await fetch(`https://pokeapi.co/api/v2/type/${selectedType}`);
         const data = await res.json();
-        currentTypeResults = data.pokemon.map(p => p.pokemon);
-        const batch = currentTypeResults.slice(typeOffset, typeOffset + TYPE_LIMIT);
-        const typeFilteredDetails = [];
-        for (let entry of batch) {
-            const cleanName = entry.name.split(':')[0];
-            try {
-                const pokeRes = await fetch(`${BASE_URL}/${cleanName}`);
-                const pokeData = await pokeRes.json();
-                typeFilteredDetails.push(pokeData);
-            } catch (e) {
-                console.warn(`Überspringe ungültigen Eintrag: ${entry.name}`, e);
-            }
-        }
-        typeFilteredDetails.forEach((pokemon, index) => renderPokeMenu(pokemon, index));
-        typeOffset += TYPE_LIMIT;
-        selectedTypeText.innerHTML = `
-            <p>Filter Typ:<strong id="selected-filter">${capitalize(selectedType)}</strong></p>
-            <img id="filter-type-icon" src="${typeIconSrc}" alt="${selectedType} Icon">
-            <button id="filter-clear-btn" onclick="clearTypeFilter()">x</button>
-        `;
+        await getFilteredPokemon(data, selectedType, selectedTypeText);   
     } catch (error) {
         pokeRef.innerHTML = `<p>Fehler beim Laden der Pokémon vom Typ "${selectedType}"</p>`;
-        console.error(error);
     } finally {
         loader.classList.add('d_none');
     }
+}
+
+async function getFilteredPokemon(data, selectedType, selectedTypeText) {
+    currentTypeResults = data.pokemon.map(p => p.pokemon);
+    const batch = currentTypeResults.slice(typeOffset, typeOffset + TYPE_LIMIT);
+    const typeIconSrc = typeIcons[selectedType];
+    await getDetailsFiltered(batch);
+    typeOffset += TYPE_LIMIT;
+    selectedTypeText.innerHTML += filterTypeTemplate(selectedType, typeIconSrc)
+}
+
+async function fetchPokemonByName(name) {
+  const cleanName = name.split(':')[0];
+  if (cleanName.includes(':')) return null;
+  try {
+    const res = await fetch(`${BASE_URL}/${cleanName}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+async function getDetailsFiltered(batch) {
+  const details = [];
+  for (const entry of batch) {
+    const pokeData = await fetchPokemonByName(entry.name);
+    if (pokeData) {
+      details.push(pokeData);
+      filteredDetails.push(pokeData);
+    }
+  }
+  details.forEach((p, i) => renderPokeMenu(p, typeOffset + i));
 }
 
 function loadMore() {
@@ -156,60 +175,35 @@ function loadMore() {
     }
 }
 
-async function loadPokemonFiltered(type) {
-    const pokeRef = document.getElementById('poke-div');
-    const loader = document.getElementById('loading-overlay');
+async function loadPokemonFiltered() {
     loader.classList.remove('d_none');
-
     try {
         const batch = currentTypeResults.slice(typeOffset, typeOffset + TYPE_LIMIT);
         if (batch.length === 0) {
-            loadMoreBtn.style.display = 'none';  // Kein Nachladen mehr möglich
-            return;
-        }
-        const typeFilteredDetails = [];
-        for (let entry of batch) {
-            const cleanName = entry.name.split(':')[0];
-            try {
-                const pokeRes = await fetch(`${BASE_URL}/${cleanName}`);
-                const pokeData = await pokeRes.json();
-                typeFilteredDetails.push(pokeData);
-                filteredDetails.push(pokeData);
-            } catch (e) {
-                console.warn(`Überspringe ungültigen Eintrag: ${entry.name}`, e);
-            }
-        }
-        filteredDetails.push(...typeFilteredDetails);
-        typeFilteredDetails.forEach((pokemon, i) => {
-            renderPokeMenu(pokemon, typeOffset + i);
-        });
-
-        typeOffset += TYPE_LIMIT;
-
-        if (typeOffset >= currentTypeResults.length) {
             loadMoreBtn.style.display = 'none';
-        } else {
-            loadMoreBtn.style.display = 'block';
-        }
+            return;
+     }
+        await getDetailsFiltered(batch);
+        typeOffset += TYPE_LIMIT;
     } catch (error) {
         console.error("Fehler beim Nachladen gefilterter Pokémon:", error);
     } finally {
         loader.classList.add('d_none');
+        hideLoadMoreBtn();
     }
 }
 
 function clearTypeFilter() {
     renderedPokemon = [];
     currentTypeFilter = null;
-    filteredDetails = [];
-    const pokeRef = document.getElementById('poke-div');
-    const selectedTypeText = document.getElementById('selected-type-text');
-    const loader = document.getElementById('loading-overlay');
-    
+    filteredDetails = [];    
     pokeRef.innerHTML = '';
     selectedTypeText.innerHTML = '';
     loader.classList.remove('d_none');
+    generateNewSet()
+}
 
+function generateNewSet() {
     setTimeout(() => {
         pokeRef.innerHTML = '';
         let uniqueNames = new Set();

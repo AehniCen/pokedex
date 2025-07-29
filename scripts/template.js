@@ -7,10 +7,20 @@ function pokeTemplate(pokemon, index){
     </div>
     `};
 
+function filterTypeTemplate(selectedType, typeIconSrc) {
+    return `
+        <p>Filter Typ:<strong id="selected-filter">${capitalize(selectedType)}</strong></p>
+        <img id="filter-type-icon" src="${typeIconSrc}" alt="${selectedType} Icon">
+        <button id="filter-clear-btn" onclick="clearTypeFilter()">x</button>
+    `;
+}
+
 function pokeDetailsTemplate(pokemon, index) {
     
     return `
     <div id="poke-details-div-overlay">
+        <button id="prev-btn" onclick="showPrev()"><img src="assets/images/pokeball-load-more.png" alt=""></button>
+        <button id="next-btn" onclick="showNext()"><img src="assets/images/pokeball-load-more.png" alt=""></button>
         <button id="poke-details-button" onclick="handleCloseOverlay()">x</button>
         <div id="poke-details-img-stats-div">
             <div id="poke-details-img-div">
@@ -54,4 +64,21 @@ function pokeDetailsTemplate(pokemon, index) {
         </div>      
     </div>
     `
+}
+
+function generateStatsBars(pokemon) {
+  return pokemon.stats.map(stat => {
+    const name = stat.stat.name;
+    const value = stat.base_stat;
+    const percentage = Math.min((value / 200) * 100, 100); 
+    return `
+      <div class="stat-row">
+        <span class="stat-label"><p>${name}</p></span>
+        <div class="stat-bar-bg">
+          <div class="stat-bar-fill" style="width: ${percentage}%"></div>
+        </div>
+        <span class="stat-value">${value}</span>
+      </div>
+    `;
+  }).join('');
 }

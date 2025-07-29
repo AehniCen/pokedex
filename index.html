@@ -26,14 +26,23 @@
             <h1>Pokedex</h1>
         </header>
 
+    <div id="search-bar">
+        <div id="input-bar">
+            <input
+                id="pokemon-search"
+                type="text"
+                placeholder="Search by name…"/>
+            <button id="pokemon-search-btn" type="button" onclick="searchPokemonByName()">Search</button>
+        </div>
+        <small id="search-feedback" aria-live="polite"></small>
+    </div>
+
         <div id="types-filter-div">
             <div id="types-div"></div>
             <div id="selected-type-text" onclick="playAudio()"></div>
         </div>
         
-        <div id="pokedex-overlay">
-            <img id="pokedex-closed-img" src="assets/images/pokedex-closed.png" alt="" onclick="toggleStartOverlay()">
-        </div>
+        
 
         <section id="pokemon-overview">
             <div id="poke-div"></div>

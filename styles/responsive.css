@@ -177,6 +177,13 @@
     top: 5rem;
     left: 5%;
 }
+    #search-bar {
+        width: 80%;
+    }
+    #input-bar {
+        display: flex;
+        flex-direction: column;   
+    }
 
 }
 
@@ -219,6 +226,17 @@
 }
     #poke-details-sprite-div img {
         height: 3rem;
+    }
+    #search-bar {
+        width: 60%;
+    }
+    #input-bar {
+        display: flex;
+        flex-direction: column;   
+        width: 100%;
+    }
+    #search-feedback {
+        text-align: center;
     }
 }
 

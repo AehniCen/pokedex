@@ -34,3 +34,34 @@ function renderTypeIcon(pokemon, index) {
       }
     });
 }
+
+async function searchPokemonByName() {
+    const input = document.getElementById('pokemon-search');
+    const name = (document.getElementById('pokemon-search').value || '').trim().toLowerCase();
+    if (name.length < 3) { setFeedback('Bitte mindestens 3 Buchstaben eingeben.'); return; }
+    setFeedback('');
+    await withLoader(async () => {
+      const data = await fetchPokemonByNameAPI(name);
+      if (!data) { setFeedback(`Kein Pokémon mit dem Namen "${name}" gefunden.`); return; }
+      if (data && !allDetails.find(x => x.name === data.name)) allDetails.push(data);
+      openPokemonOverlayFromObject(data);
+      input.value = '';
+    });
+}
+
+function setFeedback(msg = '') {
+    const el = document.getElementById('search-feedback');
+    if (el) el.textContent = msg;
+}
+
+async function withLoader(fn) {
+    const loader = document.getElementById('loading-overlay');
+    loader?.classList.remove('d_none');
+    try { return await fn(); } finally { loader?.classList.add('d_none'); }
+}
+
+async function fetchPokemonByNameAPI(name) {
+    const res = await fetch(`${BASE_URL}/${encodeURIComponent(name)}`);
+    return res.ok ? res.json() : null;
+}
+

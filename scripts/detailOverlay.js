@@ -1,4 +1,8 @@
+const pokeOverlayRef = document.getElementById('pokemon-details-div');
+let currentDetailIndex = 0; 
+
 function openPokemonOverlay(index) {
+    currentDetailIndex = index;
     const pokeOverlayRef = document.getElementById('pokemon-details-div');
     const backgroundRef = document.getElementById('background-overlay');
     const pokemon = renderedPokemon[index];
@@ -62,77 +66,85 @@ function renderPokeDetails(pokemon, index) {
     animateAllSprites(pokemon);
 }
 
-function generateStatsBars(pokemon) {
-  return pokemon.stats.map(stat => {
-    const name = stat.stat.name;
-    const value = stat.base_stat;
-    const percentage = Math.min((value / 200) * 100, 100); 
-    return `
-      <div class="stat-row">
-        <span class="stat-label"><p>${name}</p></span>
-        <div class="stat-bar-bg">
-          <div class="stat-bar-fill" style="width: ${percentage}%"></div>
-        </div>
-        <span class="stat-value">${value}</span>
-      </div>
-    `;
-  }).join('');
+async function fetchJSON(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${r.status} ${url}`);
+  return r.json();
 }
 
-async function animateAllSprites(pokemon) {
-  const pokeOverlayRef = document.getElementById('pokemon-details-div');
-  const spriteRow = pokeOverlayRef.querySelector('.sprite-current-col');
-  const formsLabel = pokeOverlayRef.querySelector('#forms-label');
-  const spriteImg = pokeOverlayRef.querySelector('#poke-sprite');
-  const spriteContainer = pokeOverlayRef.querySelector('#poke-details-sprite-div');
+async function fetchEvolutionNamesForPokemon(pokemon) {
+  const species = await fetchJSON(pokemon.species.url);
+  const evo = await fetchJSON(species.evolution_chain.url);
+  const names = [];
+  let cur = evo.chain;
+  while (cur) { names.push(cur.species.name); cur = cur.evolves_to[0]; }
+  return names;
+}
 
+async function fetchSpritePairs(names) {
+  const jobs = names.map(n => fetchJSON(`https://pokeapi.co/api/v2/pokemon/${n}`));
+  const list = await Promise.all(jobs);
+  return list.flatMap(d => (d.sprites.front_default && d.sprites.back_default)
+    ? [{ front: d.sprites.front_default, back: d.sprites.back_default, name: d.name }]
+    : []);
+}
+
+function hideSpritesUI({formsLabel, spriteImg, spriteContainer, spriteRow}) {
   formsLabel.style.display = 'none';
-  if (spriteImg) spriteImg.style.display = 'none';
-  if (spriteImg) spriteImg.src = '';
+  if (spriteImg) { spriteImg.style.display = 'none'; spriteImg.src = ''; }
   spriteRow.style.display = 'none';
   spriteContainer.innerHTML = '';
   spriteContainer.classList.add('d_none');
+}
 
-  if (spriteAnimationInterval) {
-    clearInterval(spriteAnimationInterval);
-  }
+function showSpritesUI({formsLabel, spriteRow, spriteContainer}) {
+  if (spriteContainer.children.length) spriteContainer.classList.remove('d_none');
+  formsLabel.style.display = 'block';
+  spriteRow.style.display = 'flex';
+}
+
+function renderSpriteList(container, pairs, onClick) {
+  pairs.forEach(p => {
+    const img = document.createElement('img');
+    img.src = p.front; img.alt = `${p.name}-sprite`; img.classList.add('evo-sprite');
+    img.addEventListener('click', () => onClick(p.name));
+    container.appendChild(img);
+  });
+}
+
+function startFlipAnimation(container, pairs, ms = 700) {
+  let front = true;
+  stopFlipAnimation();
+  spriteAnimationInterval = setInterval(() => {
+    [...container.querySelectorAll('img.evo-sprite')]
+      .forEach((img, i) => img.src = front ? pairs[i]?.front : pairs[i]?.back);
+    front = !front;
+  }, ms);
+}
+
+function stopFlipAnimation() {
+  if (spriteAnimationInterval) clearInterval(spriteAnimationInterval);
+}
+
+async function animateAllSprites(pokemon) {
+  const refs = {
+    spriteRow: pokeOverlayRef.querySelector('.sprite-current-col'),
+    formsLabel: pokeOverlayRef.querySelector('#forms-label'),
+    spriteImg: pokeOverlayRef.querySelector('#poke-sprite'),
+    spriteContainer: pokeOverlayRef.querySelector('#poke-details-sprite-div')
+  };
+  hideSpritesUI(refs);
+  stopFlipAnimation();
   try {
-    const speciesRes = await fetch(pokemon.species.url);
-    const speciesData = await speciesRes.json();
-    const evoRes = await fetch(speciesData.evolution_chain.url);
-    const evoData = await evoRes.json();
-    const evolutionNames = [];
-    let current = evoData.chain;
-    while (current) {
-      evolutionNames.push(current.species.name);
-      current = current.evolves_to[0];
-    }
-    const spritePairs = [];
-    for (let name of evolutionNames) {
-      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-      const data = await res.json();
-      const front = data.sprites.front_default;
-      const back = data.sprites.back_default; 
-      if (front && back) {
-        spritePairs.push({ front, back, name });
-        const evoImg = document.createElement('img');
-        evoImg.src = front;
-        evoImg.alt = `${name}-sprite`;
-        evoImg.classList.add('evo-sprite');
-        evoImg.setAttribute('onclick', `openPokemonOverlayByName('${name}')`);
-        spriteContainer.appendChild(evoImg);
-      }
-    }
-        if (spritePairs.length === 0) return;
-        if (spriteContainer.children.length > 0) {
-          spriteContainer.classList.remove('d_none');
-        }
-      } catch (err) {
-        console.error('Fehler beim Laden der Sprites:', err);
-      }
-
-    formsLabel.style.display = 'block';
-    spriteRow.style.display = 'flex';
+    const names = await fetchEvolutionNamesForPokemon(pokemon);
+    const pairs = await fetchSpritePairs(names);
+    if (!pairs.length) return;
+    renderSpriteList(refs.spriteContainer, pairs, openPokemonOverlayByName);
+    showSpritesUI(refs);
+    startFlipAnimation(refs.spriteContainer, pairs);
+  } catch (e) {
+    console.error('Fehler beim Laden der Sprites:', e);
+  }
 }
 
 function typeText(element, text, delay = 160) {
@@ -147,15 +159,19 @@ function typeText(element, text, delay = 160) {
 }
 
 function openPokemonOverlayByName(name) {
-    let pokemon = renderedPokemon.find(p => p.name === name);
-    if (!pokemon && typeof allDetails !== 'undefined') {
-        pokemon = allDetails.find(p => p.name === name);
-    }
-    if (pokemon) {
-        openPokemonOverlayFromObject(pokemon);
+    let index = renderedPokemon.findIndex(p => p.name === name);
+    if (index !== -1) {
+        currentDetailIndex = index;
+        openPokemonOverlay(index);
         playDelay();
-    } else {
-        console.warn(`Pokémon mit Name "${name}" nicht gefunden.`);
+    } else if (typeof allDetails !== 'undefined') {
+        let pokemon = allDetails.find(p => p.name === name);
+        if (pokemon) {
+            openPokemonOverlayFromObject(pokemon);
+            playDelay();
+        } else {
+            console.warn(`Pokémon mit Name "${name}" nicht gefunden.`);
+        }
     }
 }
 
@@ -174,4 +190,18 @@ function openPokemonOverlayFromObject(pokemon) {
     const index = renderedPokemon.findIndex(p => p.name === pokemon.name);
     renderPokeDetails(pokemon, index);
     playDelay();
+}
+
+function showPrev() {
+  playDelay();
+  if (!renderedPokemon.length) return;
+  currentDetailIndex = (currentDetailIndex - 1 + renderedPokemon.length) % renderedPokemon.length;
+  openPokemonOverlay(currentDetailIndex);
+}
+
+function showNext() {
+  playDelay();
+  if (!renderedPokemon.length) return;
+  currentDetailIndex = (currentDetailIndex + 1) % renderedPokemon.length;
+  openPokemonOverlay(currentDetailIndex);
 }

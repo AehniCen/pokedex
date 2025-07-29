@@ -33,6 +33,32 @@
     z-index: 99;
 }
 
+#next-btn {
+    position: absolute;
+    top: 50%;
+    right: -4rem;
+    border: none;
+    background-color: rgba(156, 128, 33, 0);
+}
+
+#next-btn img{
+    height: 3rem;
+    rotate: 270deg;
+}
+
+#prev-btn {
+    position: absolute;
+    top: 50%;
+    left: -4rem;
+    border: none;
+    background-color: rgba(156, 128, 33, 0);
+}
+
+#prev-btn img{
+    height: 3rem;
+    rotate: 90deg;
+}
+
 #poke-details-type-icons {
     height: 2rem;
 }
