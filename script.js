@@ -17,6 +17,9 @@ let renderedPokemon = [];
 let totalPokemonCount = 0;
 const loader = document.getElementById('loading-overlay');
 
+let disableSound = false;
+const soundBtn = document.getElementById('disable-sound-btn'); 
+const soundIcon = document.getElementById('disable-sound-img');
 let AUDIO_CLICK = new Audio ('./assets/audio/click.mp3');
 AUDIO_CLICK.volume = 0.3;
 let AUDIO_DELAY = new Audio ('./assets/audio/text-delay.mp3');
@@ -42,7 +45,7 @@ function renderTypes() {
 
     for (let type in typeIcons) {
         let typeSrc = typeIcons[type];
-        typesRef.innerHTML += `<div id="types-category-div"><img class="types-categories" src="${typeSrc}" alt="type-icon" onclick="filterByType('${type}'), playAudio()"> <span class="type-text">${type}</span> </div>`;
+        typesRef.innerHTML += renderTypesTemplate(typeSrc, type);
     }
 }
 
@@ -62,6 +65,16 @@ async function loadPokemon() {
         hideLoadMoreBtn();
     }
 }
+
+document.getElementById('loupe-img').addEventListener('click', () => {
+    const filterDiv = document.getElementById('types-filter-div');
+
+    if (filterDiv.style.display === 'flex') {
+        filterDiv.style.display = 'none';
+    } else {
+        filterDiv.style.display = 'flex';
+    }
+});
 
 async function pushDetails(data) {
     for (let pokemon of data.results) {
@@ -222,5 +235,14 @@ function capitalize(word) {
 }
 
 function playAudio() {
+    if (disableSound || !AUDIO_DELAY) return;
     AUDIO_CLICK.play()
 }
+
+soundBtn.addEventListener('click', () => {
+    disableSound = !disableSound;
+
+    soundIcon.src = disableSound
+    ? 'assets/images/sound-off.png'
+    : 'assets/images/sound-on.png';
+});

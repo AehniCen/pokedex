@@ -82,3 +82,11 @@ function generateStatsBars(pokemon) {
     `;
   }).join('');
 }
+
+function renderTypesTemplate(typeSrc, type) {
+  return `
+    <div id="types-category-div">
+    <img class="types-categories" src="${typeSrc}" alt="type-icon" onclick="filterByType('${type}'), playAudio()"> 
+    <span class="type-text">${type}</span> 
+    </div>`
+}

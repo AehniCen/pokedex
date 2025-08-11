@@ -37,6 +37,7 @@
             <small id="search-feedback" aria-live="polite"></small>
         </div>
 
+        <div id="overlay-types">Type Filter <img id="loupe-img" src="assets/images/loupe.png" alt="" onclick="showTypeGrid()"> </div>
         <div id="types-filter-div">
             <div id="types-div"></div>
             <div id="selected-type-text" onclick="playAudio()"></div>
@@ -56,6 +57,8 @@
 
     </div>
     <div id="loading-overlay" class="d_none"><img id="loading-pokeball" src="assets/gifs/loading-pokeball.gif" alt="loading-pokeball"></div>
+
+    <div id="disable-sound-btn-div"><button id="disable-sound-btn" onclick="switchSounds()"><img id='disable-sound-img' src="assets/images/sound-on.png" alt=""></button></div>
 
     <script src="./script.js"></script>
     <script src="./scripts/renderOverview.js"></script>

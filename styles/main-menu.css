@@ -25,6 +25,21 @@ header {
     overflow: hidden;
 }
 
+#overlay-types {
+    display: none;
+    width: 100%;
+    height: fit-content;
+}
+
+#loupe-img {
+    height: 1rem;
+    padding-left: 0.5rem;
+}
+
+#loupe-img:hover {
+    cursor: pointer;
+}
+
 #search-bar {
     display: flex;
     flex-direction: column;
@@ -105,10 +120,12 @@ header {
 
 #pokemon-details-div {
     position: fixed;
+    height: 80%;
     width: 80%;
-    height: max-content;
+    overflow: hidden;
+    overflow-y: scroll;
     padding-bottom: 1rem;
-    top: 15rem;
+    top: 5rem;
     left: 10%;
     z-index: 7000;
     border-radius: 8px;
@@ -123,7 +140,7 @@ header {
     justify-content: center;
     grid-template-columns: repeat(6, 10.5rem);
     gap: 2rem;
-    height: 100vh;
+    height: auto;
     padding-top: 1rem;
 }
 

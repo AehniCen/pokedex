@@ -28,6 +28,8 @@ function closePokemonOverlay() {
 }
 
 function playDelay() {
+    if (disableSound || !AUDIO_DELAY) return;
+
     AUDIO_DELAY.pause();
     AUDIO_DELAY.currentTime = 0;
     AUDIO_DELAY.play().catch(error => {
@@ -168,7 +170,6 @@ function openPokemonOverlayByName(name) {
         }
     }
 }
-
 
 function openPokemonOverlayFromObject(pokemon) {
     const pokeOverlayRef = document.getElementById('pokemon-details-div');

@@ -37,18 +37,10 @@ function renderTypeIcon(pokemon, index) {
     });
 }
 
-async function ensureValidNameSet() {
-    if (validPokemonNames) return;
-    const res = await fetch(`${BASE_URL}?limit=20000&offset=0`);
-    if (!res.ok) { validPokemonNames = new Set(); return; }
-    const data = await res.json();
-    validPokemonNames = new Set((data.results || []).map(r => r.name));
-}
-
 function normalizeName(raw) {
-    if (!raw) return '';
-    const s = raw.toLowerCase().trim().replace(/:.+$/, '');
-    return s;
+    if (!raw) 
+        return '';
+    return raw.toLowerCase().trim().replace(/:.+$/, '');
 }
 
 function isValidNameSyntax(name) {
@@ -56,39 +48,128 @@ function isValidNameSyntax(name) {
 }
 
 async function searchPokemonByName() {
-    const input=document.getElementById('pokemon-search'), name=normalizeName(input.value);
-    if (name.length<3) return setFeedback('Bitte mindestens 3 Buchstaben eingeben.');
-    if (!isValidNameSyntax(name)) return setFeedback('Ungültiger Name. Erlaubt: Buchstaben, Ziffern, Bindestrich.');
+    const input = document.getElementById('pokemon-search');
+    const name = normalizeName(input.value);
+    const v = validateSearchInput(name);
+    if (v) 
+        return setFeedback(v);
     await ensureValidNameSet();
-    if (!validPokemonNames.has(name)) return setFeedback(`Kein Pokémon mit dem Namen "${name}" gefunden.`);
+    const matches = findMatchingNames(name, 60);
+    if (!matches.length) 
+        return setFeedback(`Kein Pokémon mit "${name}" im Namen gefunden.`);
     setFeedback('');
-    await withLoader(async ()=>{
-      const data=await fetchPokemonByNameAPI(name);
-      if(!data) return setFeedback(`Kein Pokémon mit dem Namen "${name}" gefunden.`);
-      if(!allDetails.find(x=>x.name===data.name)) allDetails.push(data);
-      openPokemonOverlayFromObject(data); input.value='';
+    await withLoader(async () => await loadAndRenderPokemonOverview(matches));
+    input.value = '';
+}   
+
+
+async function ensureValidNameSet() {
+    if (validPokemonNames) 
+        return;
+    try {
+      const res = await fetch(`${BASE_URL}?limit=20000&offset=0`);
+      if (!res.ok) { validPokemonNames = new Set(); return; }
+      const data = await res.json();
+      validPokemonNames = new Set((data.results || []).map(r => r.name));
+    } catch (e) {
+      console.warn('Could not load name list:', e);
+      validPokemonNames = new Set();
+    }
+}
+
+
+function validateSearchInput(name) {
+    if (name.length < 3)
+        return 'Bitte mindestens 3 Buchstaben eingeben.';
+    if (!isValidNameSyntax(name))
+        return 'Ungültiger Name. Erlaubt: Buchstaben, Ziffern, Bindestrich.';
+    return null;
+}
+
+function findMatchingNames(partialName, limit = 60) {
+    if (!validPokemonNames) 
+        return [];
+    return [...validPokemonNames].filter(n => n.includes(partialName)).slice(0, limit);
+}
+
+
+async function loadAndRenderPokemonOverview(nameList) {
+    const jobs = nameList.map(n => fetchPokemonByName(n));
+    const settled = await Promise.allSettled(jobs);
+    const pokes = settled
+      .map(s => s.status === 'fulfilled' ? s.value : null)
+      .filter(Boolean);
+
+    pokes.forEach(p => { if (!allDetails.find(x => x.name === p.name)) allDetails.push(p); });
+
+    renderPokemonOverview(pokes);
+}
+
+function filterPokemonByInput() {
+    const input = document.getElementById('pokemon-search');
+    const search = normalizeName(input.value);
+    if (search.length < 3) {
+        setFeedback('Bitte mindestens 3 Buchstaben eingeben.');
+        return;
+    }
+    const filtered = allDetails.filter(pokemon => 
+        pokemon.name.includes(search)
+    );
+    if (filtered.length === 0) {
+        setFeedback(`Kein Pokémon mit "${search}" im Namen gefunden.`);
+        return;
+    }
+
+    setFeedback('');
+    renderPokemonOverview(filtered);
+}
+
+function renderPokemonOverview(pokemonList) {
+    renderedPokemon = pokemonList.slice();
+    const container = document.getElementById('poke-div');
+    container.innerHTML = '';
+    if (!pokemonList.length) {
+        container.innerHTML = '<p>Keine Pokémon gefunden.</p>';
+        return;
+    }
+    pokemonList.forEach((pokemon, index) => {
+        renderPokeMenu(pokemon, index);
     });
+}
+
+function applyTypeColorToCard(pokemon, index) {
+    const cardTypeDiv = document.getElementById(`poke-div-type-${index}`);
+    if (!cardTypeDiv) 
+        return;
+    cardTypeDiv.className = 'poke-div-type';
+    const mainType = pokemon.types[0].type.name;
+    cardTypeDiv.classList.add(`type-${mainType}`);
+}
+
+function renderPokemonCard(pokemon, index) {
+    return `
+    <div class="template-div" id="poke-card-${index}">
+        <div class="poke-div-type" id="poke-div-type-${index}"></div>
+        <div id="poke-div-img-${index}" class="poke-div-img">
+            <img id="poke-img-image" src="${pokemon.sprites.other["official-artwork"].front_default || './assets/images/fallback-picture.png'}" alt="pokemon-image" onclick="openPokemonOverlayByName('${pokemon.name}')">
+        </div>
+        <div class="poke-div-name">
+            <p id="poke-name-p">${capitalize(pokemon.species.name)}</p>
+        </div>
+    </div>
+    `;
 }
 
 function setFeedback(msg = '') {
     const el = document.getElementById('search-feedback');
-    if (el) el.textContent = msg;
+    if (el) 
+        el.textContent = msg;
 }
 
 async function withLoader(fn) {
     const loader = document.getElementById('loading-overlay');
     loader?.classList.remove('d_none');
     try { return await fn(); } finally { loader?.classList.add('d_none'); }
-}
-
-async function fetchPokemonByNameAPI(name) {
-    try {
-      const res = await fetch(`${BASE_URL}/${encodeURIComponent(name)}`);
-      if (!res.ok) return null;
-      return await res.json();
-    } catch {
-      return null;
-    }
 }
 
 

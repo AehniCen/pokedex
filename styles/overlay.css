@@ -268,3 +268,18 @@
 #loading-pokeball {
     height: 20rem;
 }
+
+#disable-sound-btn-div {
+    position: absolute;
+    right: 2rem;
+    top: 2rem;
+}
+
+#disable-sound-btn {
+    background: none;
+    border: none;
+}
+
+#disable-sound-btn img{
+    height: 6rem;
+}
