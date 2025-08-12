@@ -48,6 +48,7 @@ function isValidNameSyntax(name) {
 }
 
 async function searchPokemonByName() {
+    let delRef = document.getElementById('delete-search')
     const input = document.getElementById('pokemon-search');
     const name = normalizeName(input.value);
     const v = validateSearchInput(name);
@@ -60,7 +61,11 @@ async function searchPokemonByName() {
         return setFeedback(`Kein Pokémon mit "${name}" im Namen gefunden.`);
     setFeedback('');
     await withLoader(async () => await loadAndRenderPokemonOverview(matches));
+
+    delRef.classList.remove('d_none')
+
     input.value = '';
+    delRef.onclick = () => { input.value = ''; setFeedback(''); renderPokemonOverview(allDetails); delRef.classList.add('d_none'); };
 }   
 
 
