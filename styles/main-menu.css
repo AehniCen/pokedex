@@ -99,10 +99,10 @@ header {
 #pokemon-overview {
     position: relative;
     height: 100vh;
-    overflow-y: auto;
+    padding-right: 1rem;
     overflow-x: hidden;
-    width: 95%;
-    max-width: 1920px;
+    width: fit-content;
+    max-width: 1990px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -137,17 +137,16 @@ header {
     position: fixed;
     display: flex;
     justify-content: center;
-    height: 55%;
+    top: 18%;
+    height: 60%;
     width: 80%;
-    max-width: 1920px;
-    padding-bottom: 2rem;
-    top: 5rem;
+    max-width: 1990px;
+    padding-bottom: 3rem;
     z-index: 7000;
     border-radius: 8px;
     border-style: solid;
     border-width: 8px;
-    border-color: #000000d0;
-    
+    border-color: #000000d0;    
 }
 
 #poke-div {
@@ -156,7 +155,7 @@ header {
     grid-template-columns: repeat(6, 10.5rem);
     gap: 2rem;
     height: auto;
-    max-width: 1920px;
+    width: 80%;
     padding-top: 1rem;
 }
 
