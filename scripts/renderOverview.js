@@ -51,6 +51,7 @@ async function searchPokemonByName() {
     const input = document.getElementById('pokemon-search');
     const name = normalizeName(input.value);
     const v = validateSearchInput(name);
+    loadMoreBtn.style.display = 'none';
     if (v) 
         return setFeedback(v);
     await ensureValidNameSet();
@@ -77,7 +78,6 @@ async function ensureValidNameSet() {
     }
 }
 
-
 function validateSearchInput(name) {
     if (name.length < 3)
         return 'Bitte mindestens 3 Buchstaben eingeben.';
@@ -91,7 +91,6 @@ function findMatchingNames(partialName, limit = 60) {
         return [];
     return [...validPokemonNames].filter(n => n.includes(partialName)).slice(0, limit);
 }
-
 
 async function loadAndRenderPokemonOverview(nameList) {
     const jobs = nameList.map(n => fetchPokemonByName(n));
@@ -144,20 +143,6 @@ function applyTypeColorToCard(pokemon, index) {
     cardTypeDiv.className = 'poke-div-type';
     const mainType = pokemon.types[0].type.name;
     cardTypeDiv.classList.add(`type-${mainType}`);
-}
-
-function renderPokemonCard(pokemon, index) {
-    return `
-    <div class="template-div" id="poke-card-${index}">
-        <div class="poke-div-type" id="poke-div-type-${index}"></div>
-        <div id="poke-div-img-${index}" class="poke-div-img">
-            <img id="poke-img-image" src="${pokemon.sprites.other["official-artwork"].front_default || './assets/images/fallback-picture.png'}" alt="pokemon-image" onclick="openPokemonOverlayByName('${pokemon.name}')">
-        </div>
-        <div class="poke-div-name">
-            <p id="poke-name-p">${capitalize(pokemon.species.name)}</p>
-        </div>
-    </div>
-    `;
 }
 
 function setFeedback(msg = '') {

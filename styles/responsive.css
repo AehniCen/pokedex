@@ -58,11 +58,14 @@
     font-size: 1rem;
 }
     header h1 {
-        padding-right: 5rem;
+        padding-right: 0;
         font-size: 6.5rem;
 }
     #disable-sound-btn-div {
     right: 0.5rem;
+}
+    #disable-sound-btn img {
+    height: 5rem;
 }
 }
 
@@ -94,7 +97,6 @@
     padding-left: 2rem;
 }
     header h1 {
-    padding-right: 6rem;
     font-size: 5.5rem;
 }
     #disable-sound-btn-div {
@@ -104,7 +106,7 @@
     height: 5.5rem;
 }
     #pokedex-opened-img {
-    padding-top: 0.4rem;
+    padding-top: 0;
     padding-left: 0.5rem;
     height: 7rem;
 }
@@ -169,7 +171,7 @@
     top: 0;
 }
     #disable-sound-img {
-    height: 4rem;
+    height: 3rem;
 }
     #pokedex-opened-img {
     height: 5rem;
@@ -228,7 +230,9 @@
     header h1 {
     font-size: 3.5rem;
 }
-
+    #disable-sound-btn img {
+    height: 4rem;
+}
 }
 
 @media(max-width: 548px){
@@ -245,14 +249,19 @@
 }
 }
 
+@media(max-width: 520px){
+    #disable-sound-btn img {
+    height: 3rem;
+}
+    header h1 {
+    font-size: 2rem;
+    }
+}
+
 @media(max-width: 444px){
     #poke-div {
     grid-template-columns: repeat(2, 8.5rem);
 }
-    header h1 {
-    font-size: 2rem;
-    padding-right: 3rem;
-    }
     #disable-sound-btn-div {
         top: 0.5rem;
     }
@@ -298,7 +307,7 @@
     .template-div:hover #poke-img-image {
     transform: scale(1.2);
 }
-.template-div:hover .poke-div-name {
+    .template-div:hover .poke-div-name {
     transform: scale(1.2);
 }
 }
@@ -372,6 +381,10 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    #pokemon-search {
+        width: 150%;
     }
 
 }

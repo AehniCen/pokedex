@@ -70,6 +70,7 @@
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
+    overflow-y: auto;
     padding-top: 2rem;
     font-size: 2rem;
     z-index: 100;
@@ -270,12 +271,14 @@
 }
 
 #disable-sound-btn-div {
-    position: absolute;
-    right: 2rem;
-    top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 #disable-sound-btn {
+    display: flex;
+    align-items: center;
     background: none;
     border: none;
 }

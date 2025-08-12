@@ -18,9 +18,9 @@ function filterTypeTemplate(selectedType, typeIconSrc) {
 function pokeDetailsTemplate(pokemon, index) {
     
     return `
+    <button id="prev-btn" onclick="showPrev()"><img src="assets/images/pokeball-load-more.png" alt=""></button>
+    <button id="next-btn" onclick="showNext()"><img src="assets/images/pokeball-load-more.png" alt=""></button>
     <div id="poke-details-div-overlay">
-        <button id="prev-btn" onclick="showPrev()"><img src="assets/images/pokeball-load-more.png" alt=""></button>
-        <button id="next-btn" onclick="showNext()"><img src="assets/images/pokeball-load-more.png" alt=""></button>
         <button id="poke-details-button" onclick="handleCloseOverlay()">x</button>
         <div id="poke-details-img-stats-div">
             <div id="poke-details-img-div">
