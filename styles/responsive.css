@@ -317,6 +317,9 @@
         padding-left: 0.5rem;
         width: 90%;
     }
+    #poke-img-image {
+    height: 7rem;
+}
 }
 
 @media(max-width: 379px){
@@ -340,6 +343,10 @@
 }
     #poke-details-stats-div {
         padding-left: 0;
+    }
+    #pokemon-overview {
+        width: 100%;
+        padding-right: 0;
     }
 }
 
